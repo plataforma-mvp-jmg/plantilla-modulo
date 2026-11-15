@@ -1,0 +1,10 @@
+{
+  "origen": "plataforma/packages/auth",
+  "version": "0.1.0",
+  "nota": "Copia generada; no editar. La verifica scripts/verificar-vendor.mjs en la CI.",
+  "archivos": {
+    "claims.ts": "2d2de2d3a9c8afc91f54364dd80ded647943b4cf8998c12f2cc3e49ee796ca28",
+    "index.ts": "9c60c3b110b4b6401ab52d04a43e0ddfd0d8602c117b613720aa94a940faeee1",
+    "verificador.ts": "6e5a0e4ca799f4d262f035ad4f22c132c2a12fdfe92079990018fd59f524654c"
+  }
+}

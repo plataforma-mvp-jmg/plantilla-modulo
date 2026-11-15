@@ -1,0 +1,5 @@
+# Sistemas aprueba todo cambio (ADR-085). El team "sistemas" tiene solo revisores.
+*                               @plataforma-mvp-jmg/sistemas
+/.github/                       @plataforma-mvp-jmg/sistemas
+/modulo.yaml                    @plataforma-mvp-jmg/sistemas
+/src/vendor/                    @plataforma-mvp-jmg/sistemas
