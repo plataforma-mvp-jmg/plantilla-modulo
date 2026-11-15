@@ -1,0 +1,6 @@
+# Repo de un solo paquete: este archivo solo lleva la configuración de pnpm (igual que en plataforma).
+allowBuilds:
+  esbuild: true
+overrides:
+  # Advisory de minimatch; quitar cuando typescript-eslint pida ^11 (igual que en plataforma).
+  minimatch: 11.0.8

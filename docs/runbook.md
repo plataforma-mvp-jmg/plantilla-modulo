@@ -1,0 +1,18 @@
+# Runbook
+
+## Salud
+
+- `GET /health` → proceso vivo. `GET /ready` → listo para recibir tráfico. `GET /meta` → id y versión.
+
+## Fallas conocidas
+
+| Síntoma | Causa probable | Acción |
+|---|---|---|
+| Todo responde 401 | JWKS de la plataforma inaccesible o `PLATFORM_ISSUER` distinto | Revisar las variables y que `/.well-known/jwks.json` responda |
+| No arranca: "no está declarado en modulo.yaml" | Un endpoint pide un rol que no existe | Declarar el rol (PR revisado por Sistemas) o corregir el endpoint |
+| No arranca: "Configuración inválida" | Faltan variables fuera de local | Completar el entorno según `.env.example` |
+| CI: "La copia de @plataforma/auth fue modificada" | Se editó `src/vendor/` | Revertir; la actualiza Sistemas |
+
+## Escalamiento
+
+Incidentes S1/S2: guardia de Sistemas. Rollback: volver a la versión anterior desde el deployer (I4).

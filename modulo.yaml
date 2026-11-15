@@ -1,0 +1,11 @@
+# Manifiesto técnico del módulo. Lo valida la CI y la API al arrancar.
+# Al generar un módulo desde la plantilla, el aprovisionamiento reemplaza "plantilla-modulo" por el id.
+id: plantilla-modulo
+version: 0.1.0
+roles:
+  - id: lector
+    descripcion: Consulta información del módulo.
+  - id: operador
+    descripcion: Carga y modifica registros.
+  - id: administrador
+    descripcion: Elimina registros y administra el módulo.

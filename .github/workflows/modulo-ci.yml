@@ -1,0 +1,66 @@
+# CI del módulo (plantilla homologada; mismos controles que plataforma).
+# Las acciones están fijadas por SHA (supply chain); Dependabot propone las actualizaciones.
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  calidad:
+    name: calidad (vendor, lint, tipos, tests, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm verify
+
+  secretos:
+    name: secretos (gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      # Binario por contenedor: no requiere licencia de la acción en organizaciones.
+      - run: >
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1
+          git /repo --redact --no-banner --exit-code 1
+
+  dependencias:
+    name: dependencias (osv-scanner)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: >
+          docker run --rm -v "$PWD:/src" ghcr.io/google/osv-scanner:v2.7.1
+          scan source --lockfile /src/pnpm-lock.yaml
+
+  resumen:
+    # Único check requerido por el ruleset: falla si cualquier job anterior falla.
+    name: resumen
+    if: always()
+    needs: [calidad, secretos, dependencias]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verificar resultados
+        run: |
+          echo '${{ toJSON(needs) }}' > resultados.json
+          if grep -qE '"result": "(failure|cancelled|skipped)"' resultados.json; then
+            echo "Hay controles obligatorios que no pasaron." && exit 1
+          fi
