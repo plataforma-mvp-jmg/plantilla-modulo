@@ -16,7 +16,7 @@ nace de este repo (*template repository*) y hereda sus controles.
   (gitleaks) y dependencias (osv-scanner). `resumen` es el check obligatorio.
 - **Gobierno:** CODEOWNERS al team `sistemas`, ruleset `github/rulesets/main-modulo.json`,
   `AGENTS.md` para asistentes de IA y plantilla de PR.
-- **Dockerfile** con usuario no root y health check.
+- **Dockerfile** con usuario no root y health check; la imagen se publica sola al mergear en `main`.
 
 ## Cómo correrlo
 
@@ -41,6 +41,9 @@ El aprovisionamiento (I2-3) lo hace solo. A mano, serían estos pasos:
 
 ## Versiones de la plantilla
 
+- **0.4.0** — Al mergear en `main`, la CI publica la imagen en GHCR por digest, con prueba de humo,
+  SBOM y atestaciones de procedencia y SBOM (`modulo-publicar.yml`, ADR 0011 de plataforma). Dockerfile
+  corregido para Node 26 (corepack). Ruleset con CodeQL obligatorio.
 - **0.3.0** — Límite de pedidos por usuario con `@fastify/rate-limit` (120 por minuto,
   `RATE_LIMIT_POR_MINUTO`), declarado en cada ruta de la API: lo exige CodeQL
   (`js/missing-rate-limiting`) en los endpoints que acceden a archivos o a la base. 429 en Problem Details.
