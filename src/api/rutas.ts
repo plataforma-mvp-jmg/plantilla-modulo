@@ -1,5 +1,6 @@
 // Rutas de ejemplo: reemplazalas por las del módulo. Reglas: esquema Zod de entrada y rol mínimo
 // en cada endpoint (E3); la lógica de negocio va en src/dominio/.
+import { readFileSync } from 'node:fs';
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import type { Exigir } from '../app.js';
@@ -23,6 +24,10 @@ export async function registrarRutas(api: FastifyInstance, exigir: Exigir): Prom
   }));
 
   api.get('/api/v1/notas', { preHandler: exigir('lector'), config: { rateLimit: LIMITE } }, async () => notas);
+
+  // PRUEBA CodeQL (no mergear): misma lectura de archivo, con y sin límite declarado.
+  api.get('/api/v1/prueba-con-limite', { preHandler: exigir('lector'), config: { rateLimit: LIMITE } }, async () => readFileSync('/etc/hostname', 'utf8'));
+  api.get('/api/v1/prueba-sin-limite', { preHandler: exigir('lector') }, async () => readFileSync('/etc/hostname', 'utf8'));
 
   api.post('/api/v1/notas', { preHandler: exigir('operador'), config: { rateLimit: LIMITE } }, async (req, reply) => {
     const cuerpo = cuerpoNota.safeParse(req.body);
