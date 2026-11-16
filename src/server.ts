@@ -7,5 +7,5 @@ import { construirModulo } from './app.js';
 const config = cargarConfig(process.env);
 const manifiesto = leerManifiesto(join(import.meta.dirname, '..', 'modulo.yaml'));
 const verificar = crearVerificador({ jwksUrl: config.jwksUrl, issuer: config.issuer, audiencia: audienciaModulo(manifiesto.id) });
-const app = construirModulo({ manifiesto, verificar, logger: true });
+const app = construirModulo({ manifiesto, verificar, logger: true, limitePorMinuto: config.limitePorMinuto });
 await app.listen({ port: config.port, host: config.host });

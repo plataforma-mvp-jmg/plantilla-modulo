@@ -126,3 +126,38 @@ describe('contrato del módulo', () => {
     expect(r.body).not.toContain('autor');
   });
 });
+
+describe('límite de pedidos', () => {
+  async function tokenDe(sub: string) {
+    return new SignJWT({ email: null, nombre: sub, roles: ['lector'], empresas: ['acopio'] })
+      .setProtectedHeader({ alg: 'ES256', kid: 'k' })
+      .setIssuer(ISSUER)
+      .setSubject(sub)
+      .setAudience(`modulo:${manifiesto.id}`)
+      .setIssuedAt()
+      .setExpirationTime('5m')
+      .setJti('j'.repeat(22))
+      .sign(privada);
+  }
+
+  it('por usuario: al superar el límite responde 429 en Problem Details; otro usuario no se ve afectado', async () => {
+    const verificar = crearVerificador({ claves: createLocalJWKSet({ keys: [publica] }), issuer: ISSUER, audiencia: `modulo:${manifiesto.id}` });
+    app = construirModulo({ manifiesto, verificar, limitePorMinuto: 2 });
+    const ana = { authorization: `Bearer ${await tokenDe('ana')}` };
+    const url = `${base}/api/v1/notas`;
+    expect((await app.inject({ method: 'GET', url, headers: ana })).statusCode).toBe(200);
+    expect((await app.inject({ method: 'GET', url, headers: ana })).statusCode).toBe(200);
+    const tercero = await app.inject({ method: 'GET', url, headers: ana });
+    expect(tercero.statusCode).toBe(429);
+    expect(tercero.headers['content-type']).toContain('application/problem+json');
+    expect(tercero.json()).toMatchObject({ status: 429, title: 'Demasiadas solicitudes' });
+    expect(tercero.headers['retry-after']).toBeDefined();
+    const beto = { authorization: `Bearer ${await tokenDe('beto')}` };
+    expect((await app.inject({ method: 'GET', url, headers: beto })).statusCode).toBe(200);
+  });
+
+  it('los endpoints de sistema no se limitan', async () => {
+    app = construirModulo({ manifiesto, verificar: async () => ({}) as ClaimsPlataforma, limitePorMinuto: 1 });
+    for (let i = 0; i < 4; i++) expect((await app.inject({ method: 'GET', url: '/health' })).statusCode).toBe(200);
+  });
+});

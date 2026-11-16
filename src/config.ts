@@ -8,6 +8,7 @@ const esquema = z
     PORT: z.coerce.number().int().min(1).max(65535).default(3101),
     PLATFORM_JWKS_URL: z.url().optional(),
     PLATFORM_ISSUER: z.string().min(1).optional(),
+    RATE_LIMIT_POR_MINUTO: z.coerce.number().int().min(1).max(10000).default(120),
   })
   .transform((c, ctx) => {
     const local = c.ENTORNO === 'local';
@@ -17,7 +18,7 @@ const esquema = z
       ctx.addIssue({ code: 'custom', message: 'fuera de local, PLATFORM_JWKS_URL y PLATFORM_ISSUER son obligatorias' });
       return z.NEVER;
     }
-    return { entorno: c.ENTORNO, host: c.HOST, port: c.PORT, jwksUrl, issuer };
+    return { entorno: c.ENTORNO, host: c.HOST, port: c.PORT, jwksUrl, issuer, limitePorMinuto: c.RATE_LIMIT_POR_MINUTO };
   });
 
 export type Config = z.output<typeof esquema>;

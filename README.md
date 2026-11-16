@@ -5,6 +5,7 @@ nace de este repo (*template repository*) y hereda sus controles.
 
 ## Qué trae
 
+- **Límite de pedidos** por usuario en toda la API (429 al superarlo).
 - **API Fastify** con el contrato de módulos: `/health`, `/ready` y `/meta` sin autenticación; todo
   lo demás bajo `/m/<id>/` exige el JWT de plataforma y un rol por endpoint.
 - **`modulo.yaml`:** id, versión y roles. Un endpoint que pide un rol no declarado impide arrancar.
@@ -40,6 +41,9 @@ El aprovisionamiento (I2-3) lo hace solo. A mano, serían estos pasos:
 
 ## Versiones de la plantilla
 
+- **0.3.0** — Límite de pedidos por usuario con `@fastify/rate-limit` (120 por minuto,
+  `RATE_LIMIT_POR_MINUTO`), declarado en cada ruta de la API: lo exige CodeQL
+  (`js/missing-rate-limiting`) en los endpoints que acceden a archivos o a la base. 429 en Problem Details.
 - **0.2.0** — CI por workflow reutilizable de la plataforma con `policy-check`; reporte de cobertura
   `json-summary`; piso de cobertura 50 % (el mínimo por riesgo lo exige COD-05); plantilla de PR
   con la sección de asistencia de IA obligatoria.

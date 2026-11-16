@@ -26,7 +26,9 @@ docs/               funcional, técnica, ADRs, permisos y runbook
 
 ## Reglas obligatorias
 
-1. **Toda ruta nueva va en `src/api/` con `exigir('<rol>')`.** El rol tiene que estar en `modulo.yaml`; si no, el módulo no arranca.
+1. **Toda ruta nueva va en `src/api/` con `exigir('<rol>')` y `config: { rateLimit: LIMITE }`.** El rol tiene que
+   estar en `modulo.yaml` (si no, el módulo no arranca); sin el límite, CodeQL bloquea el PR en los endpoints que
+   acceden a archivos o a la base.
 2. **Toda entrada se valida con Zod** (`.strict()` en los cuerpos). Errores en Problem Details, sin stack traces.
 3. **P1:** configuración solo por variables de entorno, en `src/config.ts`. Nada de URLs, hosts, IDs ni secretos en el código.
 4. **P7 — repo público:** nunca datos reales, emails, nombres de sistemas internos ni información corporativa.

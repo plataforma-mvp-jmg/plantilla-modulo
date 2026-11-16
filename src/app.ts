@@ -1,5 +1,6 @@
 // Base del módulo (contrato E1–E4): todo bajo /m/<id>, JWT de plataforma obligatorio, rol mínimo por
 // endpoint y errores en Problem Details. Las rutas de negocio van en src/api/.
+import rateLimit from '@fastify/rate-limit';
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';
 import { tieneRol, tokenDeHeader, TokenInvalidoError, type ClaimsPlataforma, type Verificador } from './vendor/plataforma-auth/index.js';
 import type { Manifiesto } from './manifiesto.js';
@@ -15,7 +16,11 @@ export interface OpcionesModulo {
   manifiesto: Manifiesto;
   verificar: Verificador;
   logger?: boolean;
+  /** Pedidos por minuto y por usuario (P1: RATE_LIMIT_POR_MINUTO). */
+  limitePorMinuto?: number;
 }
+
+const RUTAS_SISTEMA = new Set(['/health', '/ready', '/meta']);
 
 export function problema(req: FastifyRequest, reply: FastifyReply, status: number, title: string) {
   return reply.code(status).type('application/problem+json').send({ type: 'about:blank', title, status, correlationId: req.id });
@@ -56,9 +61,21 @@ export function construirModulo(o: OpcionesModulo): FastifyInstance {
   app.setErrorHandler((err: { statusCode?: number; validation?: unknown }, req, reply) => {
     const status = err.statusCode && err.statusCode >= 400 && err.statusCode < 500 ? err.statusCode : 500;
     if (status === 500) req.log.error({ err }, 'error no controlado');
-    return problema(req, reply, status, status === 500 ? 'Error interno' : 'Solicitud inválida');
+    const titulo = status === 500 ? 'Error interno' : status === 429 ? 'Demasiadas solicitudes' : 'Solicitud inválida';
+    return problema(req, reply, status, titulo);
   });
   app.setNotFoundHandler((req, reply) => problema(req, reply, 404, 'No encontrado'));
+
+  // Límite de pedidos (CodeQL js/missing-rate-limiting). Detrás del gateway todos los pedidos llegan
+  // desde la misma IP: se cuenta por usuario (sub del JWT, ya verificado en onRequest).
+  void app.register(rateLimit, {
+    global: true,
+    max: o.limitePorMinuto ?? 120,
+    timeWindow: '1 minute',
+    hook: 'preHandler',
+    keyGenerator: (req) => req.claims?.sub ?? req.ip,
+    allowList: (req) => RUTAS_SISTEMA.has(req.url),
+  });
 
   const exigir: Exigir = (rol) => {
     if (!declarados.has(rol)) throw new Error(`el rol "${rol}" no está declarado en modulo.yaml`);

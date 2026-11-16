@@ -8,7 +8,8 @@ import { crearNota } from '../../src/dominio/notas.js';
 
 describe('configuración (P1)', () => {
   it('en local usa valores por defecto', () => {
-    expect(cargarConfig({})).toMatchObject({ entorno: 'local', host: '127.0.0.1', port: 3101, issuer: 'http://localhost:8080' });
+    expect(cargarConfig({})).toMatchObject({ entorno: 'local', host: '127.0.0.1', port: 3101, issuer: 'http://localhost:8080', limitePorMinuto: 120 });
+    expect(cargarConfig({ RATE_LIMIT_POR_MINUTO: '30' }).limitePorMinuto).toBe(30);
   });
 
   it('fuera de local exige JWKS e issuer', () => {
@@ -19,6 +20,7 @@ describe('configuración (P1)', () => {
 
   it('rechaza valores inválidos', () => {
     expect(() => cargarConfig({ PORT: '0' })).toThrow('Configuración inválida');
+    expect(() => cargarConfig({ RATE_LIMIT_POR_MINUTO: '0' })).toThrow('Configuración inválida');
     expect(() => cargarConfig({ PLATFORM_JWKS_URL: 'no-es-url' })).toThrow('Configuración inválida');
   });
 });
