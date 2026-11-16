@@ -14,5 +14,7 @@
 
 ## Asistencia de IA (GOB-06)
 
-- Herramienta: <!-- claude-code / ninguna -->
-- Alcance: <!-- todo / parcial -->
+<!-- Obligatorio (lo verifica policy-check). Herramienta: claude-code, claude, chatgpt, gemini,
+     copilot o ninguna. Si usaste IA, alcance: todo o parcial. -->
+- Herramienta:
+- Alcance:

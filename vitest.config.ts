@@ -7,7 +7,9 @@ export default defineConfig({
       provider: 'v8',
       include: ['src/**'],
       exclude: ['src/server.ts', 'src/vendor/**'],
-      thresholds: { lines: 80, functions: 80, branches: 70, statements: 80 },
+      // Piso común; el mínimo por riesgo (50/70/80 % de líneas) lo exige policy-check (COD-05).
+      reporter: ['text', 'json-summary'],
+      thresholds: { lines: 50, functions: 50, branches: 50, statements: 50 },
     },
   },
 });
