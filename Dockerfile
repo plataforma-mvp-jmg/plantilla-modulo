@@ -1,6 +1,7 @@
 # Imagen homologada del módulo: build en una etapa, runtime sin herramientas de desarrollo y sin root.
 FROM node:26-alpine AS build
-RUN corepack enable
+# Node 25+ ya no incluye corepack: se instala en versión fija y pnpm sale de "packageManager".
+RUN npm install -g corepack@0.36.0 && corepack enable
 WORKDIR /src
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 RUN pnpm install --frozen-lockfile

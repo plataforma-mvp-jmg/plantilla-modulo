@@ -1,6 +1,14 @@
+# Dependencias y salidas: se generan dentro de la imagen.
 node_modules
 dist
 coverage
+# Nunca en el contexto de build: secretos y configuración local (P7).
 .env
 .env.*
+secrets
+*.pem
+*.key
+# Repositorio y herramientas.
 .git
+.github
+*.patch
