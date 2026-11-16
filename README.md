@@ -10,8 +10,9 @@ nace de este repo (*template repository*) y hereda sus controles.
 - **`modulo.yaml`:** id, versión y roles. Un endpoint que pide un rol no declarado impide arrancar.
 - **Verificación del JWT** con una copia de `@plataforma/auth` en `src/vendor/`, protegida por hash
   (`pnpm vendor:check`).
-- **CI** con los mismos controles que `plataforma`: calidad, secretos (gitleaks), dependencias
-  (osv-scanner) y `resumen` como check obligatorio.
+- **CI** que llama al workflow reutilizable de la plataforma (`modulo-pr.yml`) fijado por SHA:
+  copia de auth, lint, tipos, tests con cobertura, build, **políticas** (`policy-check`), secretos
+  (gitleaks) y dependencias (osv-scanner). `resumen` es el check obligatorio.
 - **Gobierno:** CODEOWNERS al team `sistemas`, ruleset `github/rulesets/main-modulo.json`,
   `AGENTS.md` para asistentes de IA y plantilla de PR.
 - **Dockerfile** con usuario no root y health check.
@@ -36,6 +37,13 @@ El aprovisionamiento (I2-3) lo hace solo. A mano, serían estos pasos:
 1. Reemplazar `plantilla-modulo` por el id del módulo en `package.json`, `modulo.yaml`, `README.md` y `CHANGELOG.md`.
 2. Ajustar los roles de `modulo.yaml` y `docs/permisos.md`.
 3. Importar el ruleset y verificar secret scanning, push protection y alertas de Dependabot.
+
+## Versiones de la plantilla
+
+- **0.2.0** — CI por workflow reutilizable de la plataforma con `policy-check`; reporte de cobertura
+  `json-summary`; piso de cobertura 50 % (el mínimo por riesgo lo exige COD-05); plantilla de PR
+  con la sección de asistencia de IA obligatoria.
+- **0.1.0** — Versión inicial.
 
 ## Documentación
 

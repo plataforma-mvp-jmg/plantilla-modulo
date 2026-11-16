@@ -7,8 +7,10 @@ JWT de plataforma por request y lo gobierna Sistemas.
 
 - Una historia o incidente por PR. Tests primero: escribí el test del criterio de aceptación y después el código.
 - Antes de abrir el PR corré `pnpm verify` (copia de auth, lint, tipos, tests, build). Si falla, corregilo.
-- Si la CI falla, leé el job que falló y corregí **solo** eso.
-- Commits en formato Conventional Commits. Completá "Asistencia de IA" en la plantilla de PR.
+- Si la CI falla, descargá el artefacto `resumen-ci` (`resumen-ci.json`) y corregí **solo** lo que indica:
+  trae política, archivo, línea y sugerencia.
+- Commits en formato Conventional Commits. Completá "Asistencia de IA" en la descripción del PR:
+  sin eso la CI no pasa (GOB-06).
 
 ## Dónde va cada cosa
 
