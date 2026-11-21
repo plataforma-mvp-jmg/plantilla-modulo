@@ -2,6 +2,7 @@
 
 | Endpoint | Rol mínimo |
 |---|---|
+| `GET /m/<id>/` (página inicial) | lector |
 | `GET /m/<id>/api/v1/yo` | lector |
 | `GET /m/<id>/api/v1/notas` | lector |
 | `POST /m/<id>/api/v1/notas` | operador |

@@ -12,6 +12,8 @@
 | No arranca: "no está declarado en modulo.yaml" | Un endpoint pide un rol que no existe | Declarar el rol (PR revisado por Sistemas) o corregir el endpoint |
 | No arranca: "Configuración inválida" | Faltan variables fuera de local | Completar el entorno según `.env.example` |
 | Respuestas 429 "Demasiadas solicitudes" | Un usuario superó `RATE_LIMIT_POR_MINUTO` | Esperar el `retry-after`; si es uso legítimo, subir el límite por variable de entorno |
+| `/ready` responde 503 "Base de datos no disponible" | Proyecto de Supabase pausado por inactividad (plan gratuito) o caído | Reactivarlo desde el panel de Supabase; avisar a Sistemas |
+| Despliegue en `failure` "Las migraciones fallaron" | Error en una migración nueva o migración editada | Ver el log del deployer; corregir con una migración nueva. La versión anterior sigue atendiendo |
 | CI: "La copia de @plataforma/auth fue modificada" | Se editó `src/vendor/` | Revertir; la actualiza Sistemas |
 
 ## Escalamiento

@@ -9,6 +9,9 @@ const esquema = z
     PLATFORM_JWKS_URL: z.url().optional(),
     PLATFORM_ISSUER: z.string().min(1).optional(),
     RATE_LIMIT_POR_MINUTO: z.coerce.number().int().min(1).max(10000).default(120),
+    // I4-4: las pasa el deployer si el módulo tiene base (datos.base en el registry). Sin ellas, datos en memoria.
+    DATABASE_URL: z.string().regex(/^postgres(ql)?:\/\//, 'DATABASE_URL debe ser postgresql://').optional(),
+    DB_SCHEMA: z.string().regex(/^[a-z][a-z0-9_]{0,62}$/, 'DB_SCHEMA inválido').optional(),
   })
   .transform((c, ctx) => {
     const local = c.ENTORNO === 'local';
@@ -18,7 +21,15 @@ const esquema = z
       ctx.addIssue({ code: 'custom', message: 'fuera de local, PLATFORM_JWKS_URL y PLATFORM_ISSUER son obligatorias' });
       return z.NEVER;
     }
-    return { entorno: c.ENTORNO, host: c.HOST, port: c.PORT, jwksUrl, issuer, limitePorMinuto: c.RATE_LIMIT_POR_MINUTO };
+    return {
+      entorno: c.ENTORNO,
+      host: c.HOST,
+      port: c.PORT,
+      jwksUrl,
+      issuer,
+      limitePorMinuto: c.RATE_LIMIT_POR_MINUTO,
+      base: c.DATABASE_URL ? { url: c.DATABASE_URL, esquema: c.DB_SCHEMA } : null,
+    };
   });
 
 export type Config = z.output<typeof esquema>;

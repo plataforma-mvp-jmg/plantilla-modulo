@@ -6,7 +6,10 @@ export interface Nota {
   creada: string;
 }
 
-export function crearNota(id: number, texto: string, autor: string, ahora = new Date()): Nota {
+/** Regla de negocio antes de guardar: toda nota tiene autor y texto sin espacios de más. */
+export function validarNota(texto: string, autor: string): { texto: string; autor: string } {
   if (!autor) throw new Error('la nota necesita un autor');
-  return { id, texto, autor, creada: ahora.toISOString() };
+  const limpio = texto.trim();
+  if (!limpio) throw new Error('la nota necesita texto');
+  return { texto: limpio, autor };
 }

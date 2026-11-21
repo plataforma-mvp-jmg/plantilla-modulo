@@ -41,6 +41,11 @@ El aprovisionamiento (I2-3) lo hace solo. A mano, serían estos pasos:
 
 ## Versiones de la plantilla
 
+- **0.7.0** — Base de datos (I4-4, ADR 0015 de plataforma): si el registry declara `datos.base: postgres`,
+  el deployer le da al módulo un esquema y un rol propios y le pasa `DATABASE_URL` y `DB_SCHEMA`. Repositorio
+  de notas en Postgres (consultas parametrizadas) o en memoria sin base; migraciones en `migraciones/`
+  (`node dist/migrar.js`, solo hacia adelante, con control de hash); `/ready` comprueba la base; página
+  inicial en `/m/<id>/`.
 - **0.6.0** — Promoción a producción: workflow `promover` (Actions → promover, con el digest que está
   sano en staging). GitHub pide la aprobación del PO (riesgo medio/alto) y de Sistemas, y el deployer de
   producción la vuelve a verificar por API (ADR 0014 de plataforma). Los pedidos de despliegue llevan
