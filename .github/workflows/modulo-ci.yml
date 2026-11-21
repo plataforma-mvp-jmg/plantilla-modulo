@@ -16,8 +16,8 @@ concurrency:
 
 jobs:
   controles:
-    # plataforma-mvp-jmg/plataforma#24 (I4-4): misma versión de plataforma para controles y publicación
-    uses: plataforma-mvp-jmg/plataforma/.github/workflows/modulo-pr.yml@6ab11d8ce9bb724a0ff816b872653d578fec28a7
+    # plataforma-mvp-jmg/plataforma#25 (registry tolerante): misma versión de plataforma para controles y publicación
+    uses: plataforma-mvp-jmg/plataforma/.github/workflows/modulo-pr.yml@ede8109fe22c7d0ad4a611bb7a41da56543f6f3b
 
   publicar:
     # Solo en main (código revisado y con controles en verde): imagen por digest, SBOM, atestaciones
@@ -30,7 +30,7 @@ jobs:
       id-token: write
       attestations: write
       deployments: write
-    uses: plataforma-mvp-jmg/plataforma/.github/workflows/modulo-publicar.yml@6ab11d8ce9bb724a0ff816b872653d578fec28a7
+    uses: plataforma-mvp-jmg/plataforma/.github/workflows/modulo-publicar.yml@ede8109fe22c7d0ad4a611bb7a41da56543f6f3b
 
   resumen:
     # Único check requerido por el ruleset: exige que los controles hayan pasado.
