@@ -1,0 +1,27 @@
+# Promoción a producción del módulo (ADR 0014 de plataforma). Llama al workflow de la plataforma
+# FIJADO POR SHA. Este archivo no se edita en el módulo: el SHA lo actualiza Sistemas por PR.
+#
+# Uso: Actions → promover → Run workflow (rama main) → pegar el digest que está sano en staging
+# (sale del resumen del run de publicación o del deployment de staging).
+# GitHub pide las aprobaciones según el riesgo: el PO (aceptacion-negocio, riesgo medio/alto) y
+# Sistemas (production). Quien dispara la promoción no puede aprobarla.
+name: promover
+on:
+  workflow_dispatch:
+    inputs:
+      digest:
+        description: Digest sha256 de la imagen en staging (sha256:...)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  promover:
+    permissions:
+      contents: read
+      deployments: write
+    uses: plataforma-mvp-jmg/plataforma/.github/workflows/modulo-promover.yml@079ea3b37f2e507f8548bd3ebf21616485b7671e
+    with:
+      digest: ${{ inputs.digest }}

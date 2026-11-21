@@ -41,6 +41,12 @@ El aprovisionamiento (I2-3) lo hace solo. A mano, serían estos pasos:
 
 ## Versiones de la plantilla
 
+- **0.6.0** — Promoción a producción: workflow `promover` (Actions → promover, con el digest que está
+  sano en staging). GitHub pide la aprobación del PO (riesgo medio/alto) y de Sistemas, y el deployer de
+  producción la vuelve a verificar por API (ADR 0014 de plataforma). Los pedidos de despliegue llevan
+  `task: deploy:plataforma`.
+- **0.5.0** — Al publicar, la CI pide el despliegue a staging; lo ejecuta el deployer de Sistemas tras verificar
+  la atestación (ADR 0012 de plataforma).
 - **0.4.0** — Al mergear en `main`, la CI publica la imagen en GHCR por digest, con prueba de humo,
   SBOM y atestaciones de procedencia y SBOM (`modulo-publicar.yml`, ADR 0011 de plataforma). Dockerfile
   corregido para Node 26 (corepack). Ruleset con CodeQL obligatorio.
