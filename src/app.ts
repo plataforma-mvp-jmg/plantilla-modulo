@@ -5,6 +5,7 @@ import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest }
 import { tieneRol, tokenDeHeader, TokenInvalidoError, type ClaimsPlataforma, type Verificador } from './vendor/plataforma-auth/index.js';
 import type { Manifiesto } from './manifiesto.js';
 import { registrarRutas } from './api/rutas.js';
+import { repoNotasEnMemoria, type RepoNotas } from './datos/notas.js';
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -18,6 +19,10 @@ export interface OpcionesModulo {
   logger?: boolean;
   /** Pedidos por minuto y por usuario (P1: RATE_LIMIT_POR_MINUTO). */
   limitePorMinuto?: number;
+  /** Datos de las notas; sin base (local, tests) se usan en memoria. */
+  notas?: RepoNotas;
+  /** /ready: dependencias listas (por ejemplo, la base). Sin sonda, siempre listo. */
+  listo?: () => Promise<boolean>;
 }
 
 const RUTAS_SISTEMA = new Set(['/health', '/ready', '/meta']);
@@ -40,7 +45,7 @@ export function construirModulo(o: OpcionesModulo): FastifyInstance {
 
   // E4: endpoints de sistema sin autenticación (solo red interna).
   app.get('/health', async () => ({ estado: 'ok' }));
-  app.get('/ready', async () => ({ estado: 'listo' }));
+  app.get('/ready', async (req, reply) => ((await (o.listo?.() ?? true)) ? { estado: 'listo' } : problema(req, reply, 503, 'Base de datos no disponible')));
   app.get('/meta', async () => ({ id, version }));
 
   // E2: todo lo que está bajo /m/<id> exige un JWT de plataforma válido para este módulo.
@@ -84,6 +89,7 @@ export function construirModulo(o: OpcionesModulo): FastifyInstance {
     };
   };
 
-  void app.register(async (api) => registrarRutas(api, exigir), { prefix: base });
+  const notas = o.notas ?? repoNotasEnMemoria();
+  void app.register(async (api) => registrarRutas(api, exigir, notas, o.manifiesto), { prefix: base });
   return app;
 }

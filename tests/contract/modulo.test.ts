@@ -51,6 +51,26 @@ describe('contrato del módulo', () => {
     expect((await app.inject({ method: 'GET', url: '/meta' })).json()).toEqual({ id: manifiesto.id, version: manifiesto.version });
   });
 
+  it('/ready responde 503 si la base no está disponible (I4-4)', async () => {
+    app = construirModulo({ manifiesto, verificar: async () => ({}) as ClaimsPlataforma, listo: async () => false });
+    const r = await app.inject({ method: 'GET', url: '/ready' });
+    expect(r.statusCode).toBe(503);
+    expect(r.json()).toMatchObject({ title: 'Base de datos no disponible' });
+  });
+
+  it('página inicial del módulo: exige lector, escapa el nombre y no permite scripts', async () => {
+    crear();
+    expect((await app.inject({ method: 'GET', url: `${base}/` })).statusCode).toBe(401);
+    expect((await app.inject({ method: 'GET', url: `${base}/`, headers: await auth([]) })).statusCode).toBe(403);
+    const t = await token(['lector'], { nombre: '<script>x</script>' });
+    const r = await app.inject({ method: 'GET', url: `${base}/`, headers: { authorization: `Bearer ${t}` } });
+    expect(r.statusCode).toBe(200);
+    expect(r.headers['content-type']).toContain('text/html');
+    expect(r.headers['content-security-policy']).toContain("default-src 'none'");
+    expect(r.body).toContain('&#60;script&#62;');
+    expect(r.body).not.toContain('<script>');
+  });
+
   it('sin token, con token de otro módulo o con un prefijo parecido → 401 (E2)', async () => {
     crear();
     const sin = await app.inject({ method: 'GET', url: `${base}/api/v1/yo` });

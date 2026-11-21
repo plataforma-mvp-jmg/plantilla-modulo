@@ -14,6 +14,8 @@ WORKDIR /app
 COPY --from=build /src/node_modules ./node_modules
 COPY --from=build /src/dist ./dist
 COPY --from=build /src/package.json /src/modulo.yaml ./
+# Migraciones: las aplica `node dist/migrar.js` (lo corre el deployer antes del corte).
+COPY --from=build /src/migraciones ./migraciones
 USER node
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s CMD wget -qO- http://127.0.0.1:3000/health || exit 1

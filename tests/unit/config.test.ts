@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { cargarConfig } from '../../src/config.js';
 import { leerManifiesto } from '../../src/manifiesto.js';
-import { crearNota } from '../../src/dominio/notas.js';
+import { validarNota } from '../../src/dominio/notas.js';
 
 describe('configuración (P1)', () => {
   it('en local usa valores por defecto', () => {
@@ -16,6 +16,13 @@ describe('configuración (P1)', () => {
     expect(() => cargarConfig({ ENTORNO: 'staging' })).toThrow('obligatorias');
     const c = cargarConfig({ ENTORNO: 'produccion', PLATFORM_JWKS_URL: 'https://p.test/.well-known/jwks.json', PLATFORM_ISSUER: 'https://p.test', PORT: '3000' });
     expect(c).toMatchObject({ entorno: 'produccion', port: 3000, jwksUrl: 'https://p.test/.well-known/jwks.json' });
+  });
+
+  it('I4-4: base opcional con DATABASE_URL y DB_SCHEMA', () => {
+    expect(cargarConfig({}).base).toBeNull();
+    expect(cargarConfig({ DATABASE_URL: 'postgresql://r.ref:x@h:5432/postgres', DB_SCHEMA: 'tareas_piloto_staging' }).base).toEqual({ url: 'postgresql://r.ref:x@h:5432/postgres', esquema: 'tareas_piloto_staging' });
+    expect(() => cargarConfig({ DATABASE_URL: 'mysql://x' })).toThrow('Configuración inválida');
+    expect(() => cargarConfig({ DATABASE_URL: 'postgresql://x', DB_SCHEMA: 'x; drop' })).toThrow('Configuración inválida');
   });
 
   it('rechaza valores inválidos', () => {
@@ -44,8 +51,9 @@ describe('manifiesto (modulo.yaml)', () => {
 });
 
 describe('dominio', () => {
-  it('crea notas con fecha y exige autor', () => {
-    expect(crearNota(1, 't', 'u', new Date('2026-01-01T00:00:00Z'))).toEqual({ id: 1, texto: 't', autor: 'u', creada: '2026-01-01T00:00:00.000Z' });
-    expect(() => crearNota(1, 't', '')).toThrow('autor');
+  it('valida autor y texto', () => {
+    expect(validarNota('  hola ', 'u')).toEqual({ texto: 'hola', autor: 'u' });
+    expect(() => validarNota('t', '')).toThrow('autor');
+    expect(() => validarNota('   ', 'u')).toThrow('texto');
   });
 });

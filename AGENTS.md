@@ -18,6 +18,8 @@ JWT de plataforma por request y lo gobierna Sistemas.
 modulo.yaml         id, versión y roles del módulo (lo cambia Sistemas)
 src/api/            rutas Fastify: esquema Zod de entrada y rol mínimo en cada endpoint
 src/dominio/        reglas de negocio puras, sin Fastify ni base de datos
+src/datos/          acceso a datos: repositorio en memoria y en Postgres, consultas parametrizadas
+migraciones/        SQL numerado (0001_descripcion.sql); lo aplica el deployer antes de cada despliegue
 src/vendor/         copia de @plataforma/auth: NO SE EDITA (la CI lo verifica)
 tests/unit/         tests del dominio y la configuración
 tests/contract/     401/403, Problem Details y validación de entradas
@@ -35,6 +37,11 @@ docs/               funcional, técnica, ADRs, permisos y runbook
 5. **Logs** con el logger de Fastify (`req.log`) y `correlationId`; `console.*` está prohibido. Nunca loguear tokens ni datos personales.
 6. **Dependencias:** solo las necesarias, con versión exacta.
 7. **Datos de otros módulos:** solo por sus APIs. Nunca conectarse a bases de otros módulos ni a sistemas corporativos.
+8. **Base de datos:** consultas siempre parametrizadas (`$1`, `$2`), nunca SQL armado con texto del usuario.
+   Los cambios de esquema van en una migración **nueva** (`migraciones/000N_descripcion.sql`): no se editan
+   las ya aplicadas (el runner lo detecta y falla). Tienen que ser compatibles con la versión anterior, que
+   sigue atendiendo mientras se aplican: agregar columnas nullable o con default sí; borrar o renombrar
+   columnas que usa la versión anterior, no (se hace en dos despliegues).
 
 ## Prohibido para la IA
 

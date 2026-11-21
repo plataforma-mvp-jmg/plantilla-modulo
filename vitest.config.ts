@@ -6,7 +6,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**'],
-      exclude: ['src/server.ts', 'src/vendor/**'],
+      // server.ts y migrar.ts son puntos de entrada (arman dependencias reales); db.ts abre conexiones.
+      exclude: ['src/server.ts', 'src/migrar.ts', 'src/vendor/**'],
       // Piso común; el mínimo por riesgo (50/70/80 % de líneas) lo exige policy-check (COD-05).
       reporter: ['text', 'json-summary'],
       thresholds: { lines: 50, functions: 50, branches: 50, statements: 50 },
