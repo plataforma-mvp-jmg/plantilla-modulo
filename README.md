@@ -41,6 +41,7 @@ El aprovisionamiento (I2-3) lo hace solo. A mano, serían estos pasos:
 
 ## Versiones de la plantilla
 
+- **0.7.1** — Controles fijados en plataforma `6ab11d8`: el registry ya usa `datos.base` y los controles fijados en una versión anterior no lo reconocían.
 - **0.7.0** — Base de datos (I4-4, ADR 0015 de plataforma): si el registry declara `datos.base: postgres`,
   el deployer le da al módulo un esquema y un rol propios y le pasa `DATABASE_URL` y `DB_SCHEMA`. Repositorio
   de notas en Postgres (consultas parametrizadas) o en memoria sin base; migraciones en `migraciones/`
