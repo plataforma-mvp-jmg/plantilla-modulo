@@ -17,3 +17,10 @@
 ## Escalamiento
 
 Incidentes S1/S2: guardia de Sistemas. Rollback: volver a la versión anterior desde el deployer (I4).
+
+## Promoción a producción
+
+1. Copiar el digest de staging (resumen del run de publicación).
+2. Actions → **promover** → Run workflow sobre `main` con ese digest.
+3. Aprueban el PO (riesgo medio/alto) y Sistemas en el run. Quien lo disparó no puede aprobarlo.
+4. El deployer de producción verifica las aprobaciones y despliega; el estado del deployment registra quién pidió y quién aprobó.
