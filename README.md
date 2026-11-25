@@ -41,6 +41,7 @@ El aprovisionamiento (I2-3) lo hace solo. A mano, serían estos pasos:
 
 ## Versiones de la plantilla
 
+- **0.7.4** — Controles fijados en plataforma `68aeb07` (#35): los PR de Dependabot cumplen GOB-06 sin la sección de IA (el autor sale del evento de GitHub, no de la descripción).
 - **0.7.3** — Controles fijados en plataforma `43193dd` (#33, I4-5): la promoción busca el éxito en staging en todo el historial (paginado) y el resumen del run muestra el historial de producción y avisa cuando el pedido es un rollback.
 - **0.7.2** — Controles fijados en plataforma `ede8109` (#25): el registry se lee en modo tolerante y un campo nuevo ya no bloquea los PR de los módulos.
 - **0.7.1** — Controles fijados en plataforma `6ab11d8`: el registry ya usa `datos.base` y los controles fijados en una versión anterior no lo reconocían.
