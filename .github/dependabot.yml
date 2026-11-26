@@ -1,11 +1,24 @@
 version: 2
+# Un PR por ecosistema y por semana (groups): con PRs sueltos, al mergear uno el resto quedaba con el
+# lockfile en conflicto y la aprobación de Sistemas descartada. Las de seguridad siguen llegando aparte.
 updates:
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: weekly }
     labels: [dependencias]
+    groups:
+      acciones:
+        patterns: ['*']
   - package-ecosystem: npm
     directory: /
     schedule: { interval: weekly }
     labels: [dependencias]
     open-pull-requests-limit: 5
+    groups:
+      npm:
+        patterns: ['*']
+    ignore:
+      # TypeScript 7 todavía no es compatible con typescript-eslint; con el salto mayor adentro, el PR agrupado
+      # entero queda en rojo. Revisar cuando typescript-eslint lo soporte (misma regla que en plataforma).
+      - dependency-name: typescript
+        update-types: ['version-update:semver-major']
