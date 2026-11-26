@@ -1,4 +1,4 @@
-// Rutas de ejemplo: reemplazalas por las del módulo. Reglas: esquema Zod de entrada y rol mínimo
+// Rutas de ejemplo: reemplazalas por las del módulo. Reglas: esquema Zod de entrada y rol requerido
 // en cada endpoint (E3); la lógica de negocio va en src/dominio/.
 import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
