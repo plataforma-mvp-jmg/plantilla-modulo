@@ -1,4 +1,4 @@
-// Base del módulo (contrato E1–E4): todo bajo /m/<id>, JWT de plataforma obligatorio, rol mínimo por
+// Base del módulo (contrato E1–E4): todo bajo /m/<id>, JWT de plataforma obligatorio, rol requerido por
 // endpoint y errores en Problem Details. Las rutas de negocio van en src/api/.
 import rateLimit from '@fastify/rate-limit';
 import Fastify, { type FastifyInstance, type FastifyReply, type FastifyRequest } from 'fastify';

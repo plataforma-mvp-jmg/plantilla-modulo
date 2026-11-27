@@ -41,6 +41,7 @@ El aprovisionamiento (I2-3) lo hace solo. A mano, serían estos pasos:
 
 ## Versiones de la plantilla
 
+- **0.7.6** — Roles explícitos (ADR 0016 de plataforma): la documentación y los comentarios dicen "rol requerido" en vez de "rol mínimo", porque los roles no se heredan. Sin cambios de comportamiento.
 - **0.7.5** — Dependabot agrupado: un PR por ecosistema y por semana (los de seguridad siguen aparte) y sin saltos mayores de TypeScript mientras typescript-eslint no soporte la 7.
 - **0.7.4** — Controles fijados en plataforma `68aeb07` (#35): los PR de Dependabot cumplen GOB-06 sin la sección de IA (el autor sale del evento de GitHub, no de la descripción).
 - **0.7.3** — Controles fijados en plataforma `43193dd` (#33, I4-5): la promoción busca el éxito en staging en todo el historial (paginado) y el resumen del run muestra el historial de producción y avisa cuando el pedido es un rollback.

@@ -92,7 +92,7 @@ describe('contrato del módulo', () => {
     expect((await app.inject({ method: 'GET', url: `${base}/api/v1/yo`, headers: await auth(['lector']) })).statusCode).toBe(401);
   });
 
-  it('rol mínimo por endpoint (E3)', async () => {
+  it('rol requerido por endpoint (E3)', async () => {
     crear();
     const url = `${base}/api/v1/notas`;
     expect((await app.inject({ method: 'GET', url, headers: await auth([]) })).statusCode).toBe(403);

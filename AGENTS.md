@@ -16,7 +16,7 @@ JWT de plataforma por request y lo gobierna Sistemas.
 
 ```
 modulo.yaml         id, versión y roles del módulo (lo cambia Sistemas)
-src/api/            rutas Fastify: esquema Zod de entrada y rol mínimo en cada endpoint
+src/api/            rutas Fastify: esquema Zod de entrada y rol requerido en cada endpoint
 src/dominio/        reglas de negocio puras, sin Fastify ni base de datos
 src/datos/          acceso a datos: repositorio en memoria y en Postgres, consultas parametrizadas
 migraciones/        SQL numerado (0001_descripcion.sql); lo aplica el deployer antes de cada despliegue
