@@ -17,7 +17,7 @@ concurrency:
 jobs:
   controles:
     # plataforma-mvp-jmg/plataforma#25 (registry tolerante): misma versión de plataforma para controles y publicación
-    uses: plataforma-mvp-jmg/plataforma/.github/workflows/modulo-pr.yml@68aeb07301d100ca5c698939f29b03f1cb11db03
+    uses: plataforma-mvp-jmg/plataforma/.github/workflows/modulo-pr.yml@1459243dbbf67c1b6580a692056c41436e95705f
 
   publicar:
     # Solo en main (código revisado y con controles en verde): imagen por digest, SBOM, atestaciones
@@ -30,7 +30,15 @@ jobs:
       id-token: write
       attestations: write
       deployments: write
-    uses: plataforma-mvp-jmg/plataforma/.github/workflows/modulo-publicar.yml@68aeb07301d100ca5c698939f29b03f1cb11db03
+    uses: plataforma-mvp-jmg/plataforma/.github/workflows/modulo-publicar.yml@1459243dbbf67c1b6580a692056c41436e95705f
+
+  codeql:
+    # CodeQL con configuración avanzada (ADR 0018 de plataforma): analiza también los PRs de Dependabot.
+    # Requiere la configuración por defecto de CodeQL desactivada en el repo (la desactiva el aprovisionador).
+    permissions:
+      contents: read
+      security-events: write
+    uses: plataforma-mvp-jmg/plataforma/.github/workflows/modulo-codeql.yml@1459243dbbf67c1b6580a692056c41436e95705f
 
   resumen:
     # Único check requerido por el ruleset: exige que los controles hayan pasado.
