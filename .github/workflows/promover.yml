@@ -22,6 +22,6 @@ jobs:
     permissions:
       contents: read
       deployments: write
-    uses: plataforma-mvp-jmg/plataforma/.github/workflows/modulo-promover.yml@68aeb07301d100ca5c698939f29b03f1cb11db03
+    uses: plataforma-mvp-jmg/plataforma/.github/workflows/modulo-promover.yml@1459243dbbf67c1b6580a692056c41436e95705f
     with:
       digest: ${{ inputs.digest }}
